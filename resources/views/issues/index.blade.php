@@ -4,73 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Issues List</title>
-    
-    <!-- Include Tailwind CSS -->
-    @vite('resources/css/app.css') 
+
+
+    @vite('resources/css/app.css')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    
+
+    <!--  Toastr.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
-        /* Custom Styles */
-        .status-cell {
-            min-width: 120px; 
-            text-align: center;
+    /* Custom styles */
+    .status-cell {
+        min-width: 120px;
+        text-align: center;
+    }
+
+   
+    @media (max-width: 768px) {
+        table, thead, tbody, th, td, tr {
+            display: block; 
         }
 
-        /* Responsive styles */
-        @media (max-width: 768px) {
-            /* Display each table row as a block for mobile */
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-
-            /* Hide the table header */
-            thead tr {
-                display: none;
-            }
-
-            /* Each table row becomes a card */
-            tr {
-                margin-bottom: 1rem;
-                border-bottom: 1px solid #ddd;
-                background-color: #f9f9f9;
-                padding: 1rem;
-                border-radius: 0.5rem;
-            }
-
-            /* Make the cells stack on top of each other */
-            td {
-                text-align: left;
-                display: flex;
-                justify-content: space-between;
-                padding: 8px 0;
-            }
-
-            /* Add labels before the cell values */
-            td:before {
-                content: attr(data-label);
-                font-weight: bold;
-                width: 50%;
-                flex-shrink: 0;
-            }
+        thead tr {
+            display: none; 
         }
-    </style>
+
+        tr {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        td {
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        td:before {
+            content: attr(data-label); /* Add labels for mobile */
+            font-weight: bold;
+            width: 50%;
+            flex-shrink: 0;
+        }
+    }
+ 
+</style>
+
 </head>
+
 @extends('layouts.app')
 
 @section('content')
+
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
     <div class="flex-grow">
-        <div class="max-w-full table-container mt-4 h-full"> 
-            <h1 class="text-2xl font-bold mb-4">Issues List</h1>
+        <div class="max-w-full table-container mt-4 h-full p-4 bg-white rounded-lg shadow-lg">
+            <h1 class="text-3xl font-bold mb-6">Issues List</h1>
+
             <div class="flex justify-end mb-5">
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" 
-                        onclick="location.href='{{ route('issues.create') }}'">
-                    Create New Issue
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow"
+                    onclick="location.href='{{ route('issues.create') }}'">
+                    <i class="fas fa-plus-circle"></i> Create New Issue
                 </button>
             </div>
-            <div class="overflow-x-auto"> <!-- Container to enable horizontal scrolling -->
-                <table class="min-w-full bg-white shadow rounded-lg"> <!-- Responsive table -->
+
+        
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white shadow-md rounded-lg">
                     <thead class="bg-gray-200">
                         <tr>
                             <th class="p-4 text-center">No</th>
@@ -84,58 +93,71 @@
                     </thead>
                     <tbody>
                         @if($issues->isEmpty())
-                            <tr>
-                                <td colspan="7" class="py-2 px-4 text-center">No issues found.</td>
-                            </tr>
+                        <tr>
+                            <td colspan="7" class="py-2 px-4 text-center">No issues found.</td>
+                        </tr>
                         @else
-                            @foreach($issues as $issue)
-                                <tr class="text-sm bg-white border-b">
-                                    <td class="p-4 text-center" data-label="No">{{ $loop->iteration }}</td> 
-                                    <td class="p-4 text-center" data-label="ID">{{ $issue->id }}</td> 
-                                    <td class="p-4 text-center" data-label="Date">{{ $issue->date }}</td> 
-                                    <td class="p-4 text-justify" data-label="Description">{{ $issue->description }}</td>
-                                    <td class="p-4 text-center" data-label="Priority">
-                                        <span class="px-2 py-1 inline-flex text-sm font-semibold rounded-full
-                                            @if($issue->priority == 'low') bg-blue-200 text-blue-800
-                                            @elseif($issue->priority == 'medium') bg-yellow-200 text-yellow-800
-                                            @elseif($issue->priority == 'high') bg-red-200 text-red-800
-                                            @endif">
-                                            {{ ucfirst($issue->priority) }}
-                                        </span>
-                                    </td>
-                                    <td class="p-4 text-center" data-label="Attachment"> 
-                                        @if($issue->attachment)
-                                            <a href="{{ route('issues.show', $issue->id) }}" class="text-blue-500 underline">
-                                                <i class="fas fa-paperclip"></i> View Attachment
-                                            </a>
-                                        @else
-                                            No attachment
-                                        @endif
-                                    </td>
-                                    <td class="p-4 text-center" data-label="Status"> 
-                                        @if($issue->status === 'Active') 
-                                            <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-sm">Active</span>
-                                        @elseif($issue->status === 'End') 
-                                            <span class="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm">End</span>
-                                        @elseif($issue->status === 'InProgress') 
-                                            <span class="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-full text-sm">Progress</span>
-                                        @else
-                                            <span class="bg-gray-200 text-gray-800 py-1 px-3 rounded-full text-sm">Unknown</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
+                        @foreach($issues as $issue)
+                        <tr class="text-sm bg-white border-b hover:bg-gray-50">
+                            <td class="p-4 text-center" data-label="No">{{ $loop->iteration }}</td>
+                            <td class="p-4 text-center" data-label="ID">
+                                <a href="{{ route('issues.show', $issue->id) }}" class="text-blue-500 hover:underline">
+                                    <em>#{{ str_pad($issue->id, 4, '0', STR_PAD_LEFT) }}</em>
+                                </a>
+                            </td>
+                            <td class="p-4 text-center" data-label="Date">{{ \Carbon\Carbon::parse($issue->date)->format('Y-m-d') }}</td>
+                            <td class="p-4 text-justify" data-label="Description">{{ Str::limit($issue->description, 100) }}</td>
+                            <td class="p-4 text-center" data-label="Priority">
+                                <span class="px-2 py-1 inline-flex text-sm font-semibold rounded-full
+                                    @if($issue->priority == 'low') bg-blue-200 text-blue-800
+                                    @elseif($issue->priority == 'medium') bg-yellow-200 text-yellow-800
+                                    @elseif($issue->priority == 'high') bg-red-200 text-red-800
+                                    @endif">
+                                    {{ ucfirst($issue->priority) }}
+                                </span>
+                            </td>
+                            <td class="p-4 text-center" data-label="Attachment">
+                                @if($issue->attachment)
+                                <a href="{{ asset($issue->attachment) }}" class="text-blue-500 underline" target="_blank">
+                                    <i class="fas fa-paperclip"></i> View Attachment
+                                </a>
+                                @else
+                                No attachment
+                                @endif
+                            </td>
+                            <td class="p-4 text-center" data-label="Status">
+                                <span class="py-1 px-3 rounded-full text-sm
+                                    @if($issue->status === 'Active') bg-green-200 text-green-800
+                                    @elseif($issue->status === 'InProgress') bg-yellow-200 text-yellow-800
+                                    @elseif($issue->status === 'End') bg-red-200 text-red-800
+                                    @else bg-gray-200 text-gray-800 @endif">
+                                    {{ ucfirst($issue->status) }}
+                                </span>
+                            </td>
+                        </tr>
+                        @endforeach
                         @endif
                     </tbody>
                 </table>
             </div>
-           
-            <div class="mt-4">
-                {{ $issues->links() }} 
+
+            <div class="mt-6">
+                {{ $issues->links() }}
             </div>
         </div>
     </div>
 
+    <!-- Toastr Notifications -->
+    <script>
+        $(document).ready(function () {
+            @if(session('success'))
+                toastr.success("{{ session('success') }}");
+            @endif
+            @if(session('error'))
+                toastr.error("{{ session('error') }}");
+            @endif
+        });
+    </script>
 </body>
+
 @endsection
-</html>

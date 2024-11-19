@@ -21,7 +21,7 @@ class RegisteredUserController extends Controller
     {
         return view('auth.register');
     }
-
+ 
     /**
      * Handle an incoming registration request.
      *
@@ -45,6 +45,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('issues', absolute: false));
     }
 }
