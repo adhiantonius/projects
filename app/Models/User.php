@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -20,6 +19,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role', // Include the new 'role' attribute
     ];
 
     /**
@@ -43,5 +43,35 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+// In App\Models\User.php
+
+public function issues()
+{
+    return $this->belongsToMany(Issue::class);
+}
+public function requests()
+{
+    return $this->belongsToMany(Request::class, 'request_user', 'user_id', 'request_id');
+}
+
+    /**
+     * Check if the user has the 'Admin' role.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'Admin';
+    }
+
+    /**
+     * Check if the user has the 'User' role.
+     *
+     * @return bool
+     */
+    public function isUser(): bool
+    {
+        return $this->role === 'User';
     }
 }

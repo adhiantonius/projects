@@ -2,13 +2,13 @@
 
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\IssueController;
-use App\Http\Controllers\ReportController; // Import ReportController
+use App\Http\Controllers\ReportController; 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
 });
 
-// Routes for authentication
+
 require __DIR__.'/auth.php';
 
 // Route for the dashboard, accessible only to authenticated users
@@ -29,8 +29,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/request/{id}', [RequestController::class, 'update'])->name('request.update');
     Route::delete('/request/{id}', [RequestController::class, 'destroy'])->name('request.destroy');
     Route::patch('/request/{id}/status', [RequestController::class, 'updateStatus'])->name('request.updateStatus');
+    Route::post('request/{request}/add-participant', [RequestController::class, 'addParticipant'])->name('request.addParticipant');
 
-    // Routes for the issue system
+    //issues
     Route::get('/issues', [IssueController::class, 'index'])->name('issues.index');
     Route::get('/issues/create', [IssueController::class, 'create'])->name('issues.create');
     Route::post('/issues', [IssueController::class, 'store'])->name('issues.store');
@@ -39,7 +40,13 @@ Route::middleware('auth')->group(function () {
     Route::put('/issues/{issue}', [IssueController::class, 'update'])->name('issues.update');
     Route::patch('/issues/{issue}/update-status', [IssueController::class, 'updateStatus'])->name('issues.updateStatus');
     Route::delete('/issues/{issue}', [IssueController::class, 'destroy'])->name('issues.destroy');
+    Route::post('issues/{issue}/add-participant', [IssueController::class, 'addParticipant'])->name('issues.addParticipant');
 
     // Route for report
     Route::get('/report', [ReportController::class, 'showReport'])->name('report.show');
+   
+
+
 });
+
+

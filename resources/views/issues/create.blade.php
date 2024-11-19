@@ -10,10 +10,9 @@
 @section('content')
 <body class="bg-gray-100 flex justify-center items-center min-h-screen">
 
-    <!-- Fullscreen Form Container -->
     <div class="w-full h-full max-w-7xl mx-auto p-6 bg-white shadow-md rounded-lg">
 
-        <h1 class="text-2xl font-bold mb-6">Issue</h1>
+        <h1 class="text-2xl font-bold mb-6">Ticket Issue</h1>
 
         <div class="mb-6">
             @if(session('success'))

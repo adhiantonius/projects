@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'windows' => [
+            'driver' => 'session',
+            'provider' => 'windows_users',
+        ],
     ],
 
     /*
@@ -63,6 +68,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        'windows_users' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL_WINDOWS', App\Models\User::class),
         ],
 
         // 'users' => [
@@ -111,5 +121,4 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
-
 ];
